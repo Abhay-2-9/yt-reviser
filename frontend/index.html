@@ -21,12 +21,6 @@ main{max-width:880px;margin:0 auto;padding:34px 20px;text-align:center}
 h1,#speech{font-size:clamp(32px,6.4vw,66px);font-weight:600;letter-spacing:-.035em;line-height:1.08;text-wrap:balance;color:#fff}
 #idle h1{background:linear-gradient(180deg,#fff 30%,#b9c0e6);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 #idle p{color:var(--mut);max-width:440px;margin:14px auto 0}
-#speech{transition:font-size .5s}
-.compact #speech{font-size:clamp(22px,3.6vw,34px)}
-.word{display:inline-block;white-space:nowrap}
-.ch{display:inline-block}
-#speech::after{content:"";display:inline-block;width:3px;height:.85em;margin-left:5px;background:#fff;-webkit-text-fill-color:initial;vertical-align:-.05em;animation:caret 1s steps(2) infinite}
-@keyframes caret{50%{opacity:0}}
 #status{color:var(--mut);min-height:24px;margin-top:16px}
 #status.on::after{content:"";animation:dots 1.2s steps(4) infinite}
 @keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
@@ -47,20 +41,37 @@ h1,#speech{font-size:clamp(32px,6.4vw,66px);font-weight:600;letter-spacing:-.035
 .pill.top{border-color:transparent;background:var(--glow);color:#06070d;font-weight:600}
 .card p{color:var(--mut);font-size:14px;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .go{display:block;margin-top:8px;color:#fff;font-size:14px;font-weight:500}
-#bar{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);width:min(760px,calc(100% - 28px));display:flex;gap:8px;padding:8px;background:#0d0e17cc;backdrop-filter:blur(20px);border:1px solid #ffffff22;border-radius:999px;z-index:5;transition:box-shadow .3s}
+#bar{position:fixed;left:50%;bottom:calc(24px + var(--vb,0px));transform:translateX(-50%);width:min(760px,calc(100% - 28px));display:flex;gap:8px;padding:8px;background:#0d0e17cc;backdrop-filter:blur(20px);border:1px solid #ffffff22;border-radius:999px;z-index:5;transition:box-shadow .3s}
 #bar:focus-within{box-shadow:0 0 0 4px color-mix(in srgb,var(--glow) 28%,transparent),0 20px 60px -20px var(--glow)}
 select,input,button{font:inherit;color:inherit;border:0;outline:0;background:transparent}
 select{max-width:170px;padding:0 34px 0 16px;border-radius:999px;background:#1d1e28 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpath d='m1 1 5 5 5-5'/%3E%3C/svg%3E") no-repeat right 14px center;appearance:none;cursor:pointer}
-input{flex:1;min-width:0;padding:0 12px}
+
 input::placeholder{color:#6b6b78}
 button{padding:12px 24px;border-radius:999px;background:#fff;color:#000;font-weight:600;cursor:pointer}
 :focus-visible{outline:2px solid #fff;outline-offset:2px}
 @media(max-width:620px){.card{grid-template-columns:1fr}select{max-width:112px;padding-left:12px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+#stage{background:#000}
+input{flex:1;min-width:0;padding:0 12px}
+#speech{transition:font-size .5s}
+.compact #speech{font-size:clamp(22px,3.6vw,34px)}
+.word{display:inline-block;white-space:nowrap}
+.ch{display:inline-block}
+#speech::after{content:"";display:inline-block;width:3px;height:.85em;margin-left:5px;background:#fff;-webkit-text-fill-color:initial;vertical-align:-.05em;animation:caret 1s steps(2) infinite}
+@keyframes caret{50%{opacity:0}}
+/* phone keyboard open: pin the face and the spoken text to the top of what is still visible */
+@media(max-width:620px){
+body.typing #stage{position:fixed;top:var(--vt,0px);left:0;right:0;z-index:6;padding:6px 16px 10px}
+body.typing main{padding-top:190px}
+body.typing #face{width:78px;height:92px;margin-bottom:6px}
+body.typing #speech{font-size:clamp(20px,6vw,28px)}
+body.typing #idle{display:none}
+}
 </style>
 </head>
 <body>
 <main>
+  <div id="stage">
   <svg id="face" viewBox="0 0 200 236" role="img" aria-label="Assistant face">
     <defs>
       <radialGradient id="g" cx=".35" cy=".25" r=".95"><stop offset="0" stop-color="#52525d"/><stop offset=".38" stop-color="#1b1b22"/><stop offset="1" stop-color="#000"/></radialGradient>
@@ -76,9 +87,9 @@ button{padding:12px 24px;border-radius:999px;background:#fff;color:#000;font-wei
     <path id="smile" d="M88 170Q100 181 112 170" stroke="#e8e8ea" stroke-width="4" stroke-linecap="round" fill="none"/>
     <ellipse id="mouth" cx="100" cy="173" rx="12" ry="9" fill="#2a0d14" stroke="#e8e8ea" stroke-width="3"/>
   </svg>
-
   <div id="idle"><h1>Ask. It appears.</h1><p>Type a DSA question and jump to the exact moment in your playlist.</p></div>
   <h1 id="speech" hidden aria-live="polite"></h1>
+  </div>
   <p id="status"></p>
   <p id="answer"></p>
   <section id="results"></section>
@@ -86,9 +97,11 @@ button{padding:12px 24px;border-radius:999px;background:#fff;color:#000;font-wei
 
 <form id="bar">
   <select id="cat" aria-label="Topic"><option value="">All topics</option></select>
-  <input id="q" maxlength="160" placeholder="e.g. Koko eating bananas" autocomplete="off" aria-label="Your question" autofocus>
+  <input id="q" maxlength="160" placeholder="e.g. Koko eating bananas" autocomplete="off" aria-label="Your question">
   <button>Ask</button>
 </form>
+
+
 
 <script>
 const API = ["localhost", "127.0.0.1"].includes(location.hostname)
@@ -165,6 +178,18 @@ q.addEventListener("input", () => {
   moodTimer = setTimeout(() => { if (!thinking) mood("idle"); }, 1400);
 });
 
+// phone keyboard: follow the visible area so the face and its words stay in view
+const vv = window.visualViewport;
+function fit() {
+  const top = vv ? vv.offsetTop : 0, h = vv ? vv.height : innerHeight, s = document.documentElement.style;
+  s.setProperty("--vt", top + "px");                                        // top of the visible area
+  s.setProperty("--vb", Math.max(0, innerHeight - h - top) + "px");         // keyboard height, lifts the bar
+}
+if (vv) { vv.addEventListener("resize", fit); vv.addEventListener("scroll", fit); }
+fit();
+q.addEventListener("focus", () => { document.body.classList.add("typing"); fit(); setTimeout(() => { scrollTo(0, 0); fit(); }, 60); });
+q.addEventListener("blur", () => document.body.classList.remove("typing"));
+
 // pupils follow the pointer, look down while typing, dart around while thinking
 addEventListener("pointermove", e => { px = e.clientX; py = e.clientY; });
 const pupils = [...document.querySelectorAll(".pupil")];
@@ -211,8 +236,9 @@ $("#bar").onsubmit = async e => {
   e.preventDefault();
   const question = q.value.trim();
   if (!question) return;
+  if (!matchMedia("(hover:hover)").matches) q.blur();   // phones: close the keyboard to show results
   clearTimeout(moodTimer);
-  document.body.classList.add("compact");
+  document.body.classList.add("compact"); idle.hidden = true;
   $("#results").innerHTML = ""; $("#answer").textContent = "";
   thinking = true; mood("think"); setStatus("Searching the playlist", true);
   try {
@@ -234,6 +260,7 @@ $("#bar").onsubmit = async e => {
 fetch(API + "/categories").then(r => r.json())
   .then(d => d.categories.forEach(c => cat.add(new Option(c, c))))
   .catch(() => setStatus("Can't reach the backend on port 8000. Start it, then reload this page."));
+if (matchMedia("(hover:hover)").matches) q.focus();   // desktop only, so phones do not open the keyboard on load
 </script>
 </body>
 </html>
