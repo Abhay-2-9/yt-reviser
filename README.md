@@ -1,8 +1,8 @@
 # YT Reviser
 
-Ask a question about a DSA topic and get the exact video and timestamp in a **YouTube playlist** [Playlist-link](https://youtube.com/playlist?list=PLbJhGqY-mq47k_WLUtzVjmarUm1EuXPj2&si=QQ7Qd1TgiKQH3HDF) that explains it, for example "Koko eating bananas". The app searches the transcripts of 100+ lectures, picks the best matches, and links straight to the right moment.
+Ask a question about a DSA topic and get the exact video and timestamp in a ([YouTube playlist](https://youtube.com/playlist?list=PLbJhGqY-mq47k_WLUtzVjmarUm1EuXPj2&si=QQ7Qd1TgiKQH3HDF)) that explains it, for example "Koko eating bananas". The app searches the transcripts of 100+ lectures, picks the best matches, and links straight to the right moment.
 
-Built on the DSA playlist by **Padho with Pratyush**, all credit for the lectures goes to the creator.
+Built on the DSA playlist by ([Padho with Pratyush](https://youtube.com/@padho_with_pratyush?si=v6yP2pG-7kkjTfad)), all credit for the lectures goes to the creator.
 
 **Live demo:** [yt-reviser-rag.onrender.com](https://yt-reviser-rag.onrender.com/) (the free backend sleeps when idle, so the first request can take about a minute)
 
