@@ -91,7 +91,9 @@ button{padding:12px 24px;border-radius:999px;background:#fff;color:#000;font-wei
 </form>
 
 <script>
-const API = "http://localhost:8000";
+const API = ["localhost", "127.0.0.1"].includes(location.hostname)
+  ? "http://localhost:8000"
+  : "https://yt-reviser-api-jlna.onrender.com";
 const $ = s => document.querySelector(s);
 const q = $("#q"), cat = $("#cat"), speech = $("#speech"), idle = $("#idle"), face = $("#face");
 const mouth = $("#mouth"), smile = $("#smile"), brows = $("#brows"), statusEl = $("#status");
