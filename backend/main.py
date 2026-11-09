@@ -2,7 +2,7 @@ import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from src.rag import answer_question, list_categories
+from src.rag import answer_question, list_categories, client, COLLECTION
 
 app = FastAPI(title="YT Reviser")
 
@@ -38,3 +38,7 @@ def ask(body: AskRequest):
     if not body.question.strip():
         raise HTTPException(status_code=400, detail="Question is empty")
     return answer_question(body.question.strip(), category=body.category or None)
+
+@app.get("/ping")
+def ping():
+    return {"points": client.count(COLLECTION).count}
